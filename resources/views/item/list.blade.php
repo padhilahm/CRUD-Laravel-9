@@ -24,7 +24,7 @@
             <th width="280px">Action</th>
         </tr>
         @php
-            $i = 0;
+            isset($_GET['page']) ? $i = ($_GET['page'] * 10) - 10 : $i = 0;
         @endphp
         @foreach ($items as $item)
             <tr>
@@ -43,4 +43,5 @@
             </tr>
         @endforeach
     </table>
+    {{ $items->links() }}
 @endsection
