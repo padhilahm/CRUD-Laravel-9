@@ -17,7 +17,9 @@ class ItemFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name' => 'Permen',
+            'price' => 1000,
+            'category_id' => 1
         ];
     }
 }
