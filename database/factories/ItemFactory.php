@@ -17,9 +17,9 @@ class ItemFactory extends Factory
     public function definition()
     {
         return [
-            'name' => 'Permen',
-            'price' => 1000,
-            'category_id' => 1
+            'name' => $this->faker->name,
+            'price' => $this->faker->randomNumber(),
+            'image' => $this->faker->imageUrl(),
         ];
     }
 }

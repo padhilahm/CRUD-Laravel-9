@@ -16,9 +16,9 @@ class ItemController extends Controller
     {
         //
         $items = Item::paginate(10);
-        return view('item.list', compact('items','items'));
+        return view('item.list', compact('items', 'items'));
     }
- 
+
     /**
      * Show the form for creating a new resource.
      *
@@ -29,7 +29,7 @@ class ItemController extends Controller
         //
         return view('item.create');
     }
- 
+
     /**
      * Store a newly created resource in storage.
      *
@@ -38,21 +38,27 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $request->validate([
-            'name'=>'required',
-            'price'=> 'required|numeric',
+            'name' => 'required',
+            'price' => 'required|numeric',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
- 
-        $item = new Item([
-            'name' => $request->get('name'),
-            'price'=> $request->get('price')
-        ]);
- 
+
+        // upload image
+        if ($request->file('image')) {
+            $file = $request->file('image');
+            $name = $file->hashName();
+            $path = $file->storeAs('images', $name);
+        }
+
+        $item = new Item();
+        $item->name = $request->get('name');
+        $item->price = $request->get('price');
+        $item->image = $path;
         $item->save();
         return redirect('/item')->with('success', 'Item has been added');
     }
- 
+
     /**
      * Display the specified resource.
      *
@@ -62,9 +68,9 @@ class ItemController extends Controller
     public function show(Item $item)
     {
         //
-        return view('item.view',compact('item'));
+        return view('item.view', compact('item'));
     }
- 
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -74,9 +80,9 @@ class ItemController extends Controller
     public function edit(Item $item)
     {
         //
-        return view('item.edit',compact('item'));
+        return view('item.edit', compact('item'));
     }
- 
+
     /**
      * Update the specified resource in storage.
      *
@@ -84,25 +90,32 @@ class ItemController extends Controller
      * @param  \App\Item  $item
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
         //
- 
+
         $request->validate([
-            'name'=>'required',
-            'price'=> 'required|numeric',
+            'name' => 'required',
+            'price' => 'required|numeric',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
- 
- 
+
+
         $item = Item::find($id);
+        // upload image
+        if ($request->file('image')) {
+            $file = $request->file('image');
+            $name = $file->hashName();
+            $path = $file->storeAs('images', $name);
+            $item->image = $path;
+        }
         $item->name = $request->get('name');
         $item->price = $request->get('price');
- 
         $item->update();
- 
+
         return redirect('/item')->with('success', 'Item updated successfully');
     }
- 
+
     /**
      * Remove the specified resource from storage.
      *

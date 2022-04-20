@@ -45,3 +45,4 @@
     </table>
     {{ $items->links() }}
 @endsection
+
